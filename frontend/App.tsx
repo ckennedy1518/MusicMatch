@@ -6,6 +6,7 @@ import * as SpotifyConsts from "./spotify";
 import { useEffect, useState, useContext } from "react";
 import { useUserData } from "../libs/userhook";
 import { UserContext } from "../libs/context";
+import { useCollectionData } from "react-firebase-hooks/firestore";
 import axios from "axios";
 
 function App() {
@@ -15,24 +16,25 @@ function App() {
   const [searchKey, setSearchKey] = useState("");
   const [artists, setArtists] = useState([]);
 
-  async function onSubmit() {
-    const { user, spotifytoken } = useContext(UserContext);
+  //   async function onSubmit() {
+  //     const { user, spotifytoken } = useContext(UserContext);
 
-    // Create refs for both documents
-    const userDoc = firestore.doc(`users/${user.uid}`);
-    const spotifytokenDoc = firestore.doc(
-      `spotifytokens/${spotifytoken.value}`
-    );
+  //     // Create refs for both documents
+  //     const userDoc = firestore.doc(`users/${user.uid}`);
+  //     const spotifytokenDoc = firestore.doc(
+  //       `spotifytokens/${spotifytoken.value}`
+  //     );
 
-    // Commit both docs together as a batch write.
-    const batch = firestore.batch();
-    batch.set(userDoc, { spotifytoken: spotifytoken });
-    batch.set(spotifytokenDoc, { uid: user.uid });
+  //     // Commit both docs together as a batch write.
+  //     const batch = firestore.batch();
+  //     batch.set(userDoc, { spotifytoken: spotifytoken });
+  //     batch.set(spotifytokenDoc, { uid: user.uid });
 
-    await batch.commit();
-  }
+  //     await batch.commit();
+  //   }
 
   useEffect(() => {
+    const userRef = firestore.collection("Users");
     let unsubscribe;
 
     const hash = window.location.hash;
@@ -51,7 +53,22 @@ function App() {
 
     setToken(token);
 
-    onSubmit();
+    let snapshot: any;
+
+    const sendToken = async () => {
+      snapshot = await userRef.where("spotifytoken", "==", token).get();
+
+      if (snapshot.empty) {
+        await userRef.add({
+          spotifytoken: token,
+        });
+      } else {
+        console.log("User must esxist");
+      }
+    };
+
+    sendToken();
+
     // EXTRA
   }, []);
 
