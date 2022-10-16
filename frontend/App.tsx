@@ -1,9 +1,11 @@
 // import reactLogo from "./assets/react.svg";
 import ourLogo from "./assets/couplet-icon.svg";
 import "./styles/App.css";
+import { auth, firestore } from "../libs/Firebase";
 import * as SpotifyConsts from "./spotify";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useUserData } from "../libs/userhook";
+import { UserContext } from "../libs/context";
 import axios from "axios";
 
 function App() {
@@ -12,6 +14,23 @@ function App() {
   // fetch spotify data
   const [searchKey, setSearchKey] = useState("");
   const [artists, setArtists] = useState([]);
+
+  async function onSubmit() {
+    const { user, spotifytoken } = useContext(UserContext);
+
+    // Create refs for both documents
+    const userDoc = firestore.doc(`users/${user.uid}`);
+    const spotifytokenDoc = firestore.doc(
+      `spotifytokens/${spotifytoken.value}`
+    );
+
+    // Commit both docs together as a batch write.
+    const batch = firestore.batch();
+    batch.set(userDoc, { spotifytoken: spotifytoken });
+    batch.set(spotifytokenDoc, { uid: user.uid });
+
+    await batch.commit();
+  }
 
   useEffect(() => {
     let unsubscribe;
@@ -32,6 +51,7 @@ function App() {
 
     setToken(token);
 
+    onSubmit();
     // EXTRA
   }, []);
 
@@ -41,18 +61,19 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <div>
-        <a target="_blank">
-          <img src={ourLogo} className="logo" alt="Vite logo" />
-        </a>
-      </div>
-      <h1>Music Match</h1>
-      <div className="card">
-        <a href={SpotifyConsts.loginUrl} target="_blank">
-          <button>Login with Spotify</button>
-        </a>
-        {/* {!token ? (
+    <UserContext.Provider value={{ user: null, spotifytoken: null }}>
+      <div className="App">
+        <div>
+          <a target="_blank">
+            <img src={ourLogo} className="logo" alt="Vite logo" />
+          </a>
+        </div>
+        <h1>Music Match</h1>
+        <div className="card">
+          <a href={SpotifyConsts.loginUrl} target="_blank">
+            <button>Login with Spotify</button>
+          </a>
+          {/* {!token ? (
           <form onSubmit={searchArtists}>
             <input type="text" onChange={(e) => setSearchKey(e.target.value)} />
             <button type={"submit"}>Search</button>
@@ -60,14 +81,15 @@ function App() {
         ) : (
           <p>Please login</p>
         )} */}
-        {/* <p>
+          {/* <p>
           Edit <code>frontend/App.tsx</code> and save to test HMR
         </p> */}
-      </div>
-      {/* <p className="read-the-docs">
+        </div>
+        {/* <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p> */}
-    </div>
+      </div>
+    </UserContext.Provider>
   );
 }
 
