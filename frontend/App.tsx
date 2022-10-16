@@ -13,13 +13,16 @@ function App() {
         <a href="https://vitejs.dev" target="_blank">
           <img src={ourLogo} className="logo" alt="Vite logo" />
         </a>
-        {/* <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a> */}
       </div>
       <h1>Music Match</h1>
       <div className="card">
-        <button 
+        <button
+          onClick={() => {
+            console.log(loginUrl);
+            window.location = loginUrl;
+          }}
+        >
+          Sign in with Spotify
         </button>
         {/* <p>
           Edit <code>frontend/App.tsx</code> and save to test HMR
