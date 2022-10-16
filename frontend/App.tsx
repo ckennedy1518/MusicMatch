@@ -4,7 +4,6 @@ import "./styles/App.css";
 import { auth, firestore } from "../libs/Firebase";
 import * as SpotifyConsts from "./spotify";
 import { useEffect, useState, useContext } from "react";
-import { useUserData } from "../libs/userhook";
 import { UserContext } from "../libs/context";
 import { useCollectionData } from "react-firebase-hooks/firestore";
 import axios from "axios";
