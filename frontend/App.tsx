@@ -2,6 +2,7 @@ import { useState } from "react";
 // import reactLogo from "./assets/react.svg";
 import ourLogo from "./assets/couplet-icon.svg";
 import "./App.css";
+import { loginUrl } from "./spotify";
 
 function App() {
   const [count, setCount] = useState(0);
@@ -18,8 +19,7 @@ function App() {
       </div>
       <h1>Music Match</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+        <button 
         </button>
         {/* <p>
           Edit <code>frontend/App.tsx</code> and save to test HMR
