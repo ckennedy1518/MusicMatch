@@ -1,22 +1,17 @@
 // Spotify
-export const authEndpoint = "https://accounts.spotify.com/authorize";
 
 //TODO: change later to an actual uri
-const redirectUri = "https://localhost:3000";
+// const redirectUri = "http://localhost:5173/";
 
-const clientId = "11890314c28c4460b4eeffe357a237d2";
+const AUTH_ENDPOINT = "https://accounts.spotify.com/authorize";
+const CLIENT_ID = "11890314c28c4460b4eeffe357a237d2";
+const REDIRECT_URI = "http://localhost:5173/";
+const RESPONSE_TYPE = "token";
 
-const scopes = [
-  "user-read-currently-playing",
-  "user-recently-played",
-  "user-read-playback-state",
-  "user-top-read",
-  "user-modify-playback-state",
-];
+const scopes = ["user-recently-played"];
 
-export const loginUrl: string = `${authEndpoint}?
-client_id=${clientId}
-&redirect_uri=${redirectUri}
-&scope=${scopes.join("%20")}
-&response_type=token
+export const loginUrl: string = `${AUTH_ENDPOINT}?
+client_id=${CLIENT_ID}
+&redirect_uri=${REDIRECT_URI}
+&response_type=${RESPONSE_TYPE}
 &show_dialog=true`;

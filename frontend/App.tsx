@@ -16,14 +16,9 @@ function App() {
       </div>
       <h1>Music Match</h1>
       <div className="card">
-        <button
-          onClick={() => {
-            console.log(loginUrl);
-            window.location = loginUrl;
-          }}
-        >
-          Sign in with Spotify
-        </button>
+        <a href={loginUrl} target="_blank">
+          <button>Login with Spotify</button>
+        </a>
         {/* <p>
           Edit <code>frontend/App.tsx</code> and save to test HMR
         </p> */}
