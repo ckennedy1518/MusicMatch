@@ -58,7 +58,7 @@ function App() {
     const sendToken = async () => {
       snapshot = await userRef.where("spotifytoken", "==", token).get();
 
-      if (snapshot.empty) {
+      if (snapshot.empty && token != null) {
         await userRef.add({
           spotifytoken: token,
         });
