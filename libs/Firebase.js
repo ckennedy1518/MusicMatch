@@ -3,6 +3,13 @@ import firebase from "firebase/app";
 import "firebase/auth";
 import "firebase/firestore";
 import "firebase/storage";
+import "firebase/firebase-admin";
+
+const serviceAccount = require("path/to/serviceAccountKey.json");
+
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -22,5 +29,5 @@ if (!firebase.apps.length) {
 }
 
 export const FBauth = firebase.auth();
-export const FBanalytics = firebase.firestore();
+export const firestore = firebase.firestore();
 export const FBstorage = firebase.storage();

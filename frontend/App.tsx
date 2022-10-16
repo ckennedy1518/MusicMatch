@@ -1,7 +1,7 @@
 // import reactLogo from "./assets/react.svg";
 import ourLogo from "./assets/couplet-icon.svg";
 import "./styles/App.css";
-import { loginUrl } from "./spotify";
+import * as SpotifyConsts from "./spotify";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -11,24 +11,6 @@ function App() {
   // fetch spotify data
   const [searchKey, setSearchKey] = useState("");
   const [artists, setArtists] = useState([]);
-
-  /**
-   * @param e - DOM element
-   */
-  const searchArtists = async (e: any) => {
-    e.preventDefault();
-    const { data } = await axios.get("https://api.spotify.com/v1/search", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      params: {
-        q: searchKey,
-        type: "artist",
-      },
-    });
-
-    setArtists(data.artists.items);
-  };
 
   useEffect(() => {
     const hash = window.location.hash;
@@ -47,13 +29,41 @@ function App() {
 
     if (token != null) {
       setToken(token);
+      console.log("Token stored locally!");
     } else {
       console.log("[Error] token is null.");
     }
 
     // EXTRA
-    searchArtists;
   }, []);
+
+  /**
+   * @param e - DOM element
+   */
+  const searchArtists = async (e: any) => {
+    e.preventDefault();
+    const { data } = await axios.get("https://api.spotify.com/v1/search", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      params: {
+        q: searchKey,
+        type: "artist",
+      },
+    });
+
+    console.log(data);
+    // setArtists(data.artists.items);
+  };
+
+  //   const renderArtists = () => {
+  //     return artists.map(artist => (
+  //         <div key={artist.id}>
+  //             {artist.images.length ? <img width={"100%"} src={artist.images[0].url} alt=""/> : <div>No Image</div>}
+  //             {artist.name}
+  //         </div>
+  //     ));
+  //   };
 
   const logout = () => {
     setToken("");
@@ -63,15 +73,23 @@ function App() {
   return (
     <div className="App">
       <div>
-        <a href="https://vitejs.dev" target="_blank">
+        <a target="_blank">
           <img src={ourLogo} className="logo" alt="Vite logo" />
         </a>
       </div>
       <h1>Music Match</h1>
       <div className="card">
-        <a href={loginUrl} target="_blank">
+        <a href={SpotifyConsts.loginUrl} target="_blank">
           <button>Login with Spotify</button>
         </a>
+        {!token ? (
+          <form onSubmit={searchArtists}>
+            <input type="text" onChange={(e) => setSearchKey(e.target.value)} />
+            <button type={"submit"}>Search</button>
+          </form>
+        ) : (
+          <p>Please login</p>
+        )}
         {/* <p>
           Edit <code>frontend/App.tsx</code> and save to test HMR
         </p> */}
